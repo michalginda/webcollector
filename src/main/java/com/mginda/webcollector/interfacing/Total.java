@@ -1,7 +1,7 @@
-package com.mginda.domain.interfacing;
+package com.mginda.webcollector.interfacing;
 
-import com.mginda.domain.product.ProductItem;
-import com.mginda.domain.product.ProductItemsSummary;
+import com.mginda.webcollector.domain.product.ProductItem;
+import com.mginda.webcollector.domain.product.ProductItemsSummary;
 
 import java.math.BigDecimal;
 import java.util.List;

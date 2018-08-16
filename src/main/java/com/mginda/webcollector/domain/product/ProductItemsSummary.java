@@ -1,4 +1,4 @@
-package com.mginda.domain.product;
+package com.mginda.webcollector.domain.product;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
