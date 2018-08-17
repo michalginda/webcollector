@@ -1,17 +1,16 @@
 package com.mginda.webcollector.domain.web;
 
-import com.mginda.webcollector.domain.product.ProductItem;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-public class WebDataMiner
+import com.mginda.webcollector.domain.product.ProductItem;
+
+public class WebProductItemDataMiner
 {
     private static final String URL_PATH_SEGMENT_SEPARATOR = "/";
-    private String baseURL = "";
+    private String baseURL;
 
-    public WebDataMiner(String url)
+    public WebProductItemDataMiner(String url)
     {
         if (!isValidURL(url))
         {
@@ -20,14 +19,9 @@ public class WebDataMiner
         this.baseURL = url;
     }
 
-    public String getProductURL(String href)
+    public String getProductURL(String relativeURL)
     {
-        // TODO: extract href
-        String relativeURL = href;
-
-        String absoluteProductURL = normalizeURL(this.baseURL) + relativeURL;
-        return absoluteProductURL;
-
+        return normalizeURL(this.baseURL) + relativeURL;
     }
 
     private String normalizeURL(String url)
@@ -50,15 +44,15 @@ public class WebDataMiner
 
     private boolean isValidURL(String url)
     {
-        if (url != null & url.length() > 0 & url.contains(URL_PATH_SEGMENT_SEPARATOR)
-                & (url.lastIndexOf(URL_PATH_SEGMENT_SEPARATOR) > 7))
+        if (url != null)
         {
-            return true;
+            if (url.contains(URL_PATH_SEGMENT_SEPARATOR)
+                    & (url.lastIndexOf(URL_PATH_SEGMENT_SEPARATOR) > 7))
+            {
+                return true;
+            }
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     public String mineNutrition(Document productDocument)
@@ -102,18 +96,18 @@ public class WebDataMiner
     {
         Element baseDescription = productDocument.selectFirst("div.productText");
         Element deeper;
-        Element oneLine = baseDescription;
+        Element oneLine;
         if (baseDescription != null)
         {
             if ((deeper = baseDescription.selectFirst("div.memo")) != null)
             {
                 if ((oneLine = deeper.selectFirst("p")) != null)
-                return oneLine.text();
+                    return oneLine.text();
             }
             else if ((deeper = baseDescription.selectFirst("div.itemTypeGroup")) != null)
             {
                 if ((oneLine = deeper.selectFirst("p:nth-child(2)")) != null)
-                return oneLine.text();
+                    return oneLine.text();
             }
             else if ((oneLine = baseDescription.selectFirst("p")) != null)
                 return oneLine.text();
@@ -121,7 +115,8 @@ public class WebDataMiner
 
                 return baseDescription.text();
         }
-        else if ((baseDescription = productDocument.selectFirst("div.itemTypeGroupContainer.productText > div.itemTypeGroup"))!= null)
+        else if ((baseDescription = productDocument
+                .selectFirst("div.itemTypeGroupContainer.productText > div.itemTypeGroup")) != null)
         {
             if ((oneLine = baseDescription.selectFirst("p")) != null)
                 return oneLine.text();

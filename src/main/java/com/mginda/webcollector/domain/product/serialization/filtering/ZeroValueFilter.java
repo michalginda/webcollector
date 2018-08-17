@@ -1,4 +1,4 @@
-package com.mginda.webcollector.interfacing;
+package com.mginda.webcollector.domain.product.serialization.filtering;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonMappingException;

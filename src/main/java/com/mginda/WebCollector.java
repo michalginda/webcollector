@@ -1,28 +1,28 @@
 package com.mginda;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.mginda.webcollector.domain.product.ProductItem;
-import com.mginda.webcollector.domain.web.WebDataMiner;
-import com.mginda.webcollector.interfacing.Result;
-import com.mginda.webcollector.interfacing.ZeroValueFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.java2d.pipe.SpanShapeRenderer;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.mginda.webcollector.domain.product.ProductItem;
+import com.mginda.webcollector.domain.product.serialization.filtering.ZeroValueFilter;
+import com.mginda.webcollector.domain.web.WebProductItemDataMiner;
+import com.mginda.webcollector.interfacing.Result;
 
 public class WebCollector
 {
 
-    public static final String baseURL = "https://jsainsburyplc.github.io/serverside-test/site/www.sainsburys.co.uk/webapp/wcs/stores/servlet/gb/groceries/berries-cherries-currants6039.html";
-    public static final Logger LOGGER = LoggerFactory.getLogger(WebCollector.class);
+    private static final String baseURL = "https://jsainsburyplc.github.io/serverside-test/site/www.sainsburys.co.uk/webapp/wcs/stores/servlet/gb/groceries/berries-cherries-currants6039.html";
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebCollector.class);
 
     public static void main(String[] args)
     {
@@ -30,7 +30,7 @@ public class WebCollector
         collector.collect();
     }
 
-    public ArrayList<ProductItem> collect()
+    ArrayList<ProductItem> collect()
     {
         LOGGER.info("WebCollector booting up...");
         ArrayList<ProductItem> products = new ArrayList<>();
@@ -40,7 +40,7 @@ public class WebCollector
             Document mainPage = Jsoup.connect(baseURL).get();
             //LOGGER.info(mainPage.select(".product").toString());
             Elements webproducts = mainPage.select(".product");
-            WebDataMiner miner = new WebDataMiner(baseURL);
+            WebProductItemDataMiner miner = new WebProductItemDataMiner(baseURL);
 
 
             for (Element webproduct : webproducts)
@@ -75,7 +75,7 @@ public class WebCollector
 
     }
 
-    public String getResult(ArrayList<ProductItem> products)
+    String getResult(ArrayList<ProductItem> products)
     {
         ObjectMapper mapper = new ObjectMapper();
         SimpleFilterProvider filterProvider = new SimpleFilterProvider().addFilter("zeroValueFilter", new ZeroValueFilter());
